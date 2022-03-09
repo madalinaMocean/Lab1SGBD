@@ -16,6 +16,7 @@ namespace SGBDLab1
         public Form1()
         {
             InitializeComponent();
+            this.dataGridView1.CellClick += new DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             insertButton.Enabled = false;
             updateButton.Enabled = false;
             deleteButton.Enabled = false;
