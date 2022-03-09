@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\madal\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\madal\\.nuget\\packages"
+    ]
+  }
+}
