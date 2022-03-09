@@ -16,6 +16,8 @@ namespace SGBDLab1
         public Form1()
         {
             InitializeComponent();
+            this.dataGridView1.CellClick += new DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+
             insertButton.Enabled = false;
             updateButton.Enabled = false;
             deleteButton.Enabled = false;
@@ -58,46 +60,78 @@ namespace SGBDLab1
             }
         }
 
+
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            int iRownr = this.dataGridView1.CurrentCell.RowIndex;
+            if (e.RowIndex != -1)
+            {
+                string HotelId;
+                object value = dataGridView1.Rows[e.RowIndex].Cells[0].Value;
+                if (value is DBNull) { return; }
 
-            object cellvalue1 = this.dataGridView1[0, iRownr].Value;
-            string IdString = cellvalue1.ToString();
-            int Id = Int32.Parse(IdString);
-            HotelIdTextBox.Text = IdString;
-            insertButton.Enabled = true;
-            updateButton.Enabled = false;
-            deleteButton.Enabled = false;
-            HotelIdTextBox.ReadOnly = true;
+                HotelId = value.ToString();
+                RetrieveCopiesHotelId(HotelId);
+            }
 
-            //create connection
-            SqlConnection connection = new SqlConnection(connectionString);
+        }
 
-            //create the command and parameter objects
-            string childQuery = "select * from Employee where HotelId = @HotelId";
-            SqlCommand command = new SqlCommand(childQuery, connection);
-            command.Parameters.Add("@HotelId",SqlDbType.Int);
-            command.Parameters["@HotelId"].Value=Id;
-
-            try
+        private void RetrieveCopiesHotelId(string HotelId)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                SqlDataReader reader = command.ExecuteReader();
-                DataTable childTable = new DataTable();
-                childTable.Load(reader);
-                dataGridView2.DataSource = childTable;
-                reader.Close();
-            }
+                SqlDataAdapter da = new SqlDataAdapter("select * from Employee where HotelId = @HotelId", connection);
+                da.SelectCommand.Parameters.AddWithValue("@HotelId", HotelId);
 
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
+                DataTable dtbl2 = new DataTable();
+                da.Fill(dtbl2);
+                dataGridView2.DataSource = dtbl2;
                 connection.Close();
             }
-
-
         }
+
+
+        //private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    int iRownr = this.dataGridView1.CurrentCell.RowIndex;
+
+        //    object cellvalue1 = this.dataGridView1[0, iRownr].Value;
+        //    string IdString = cellvalue1.ToString();
+        //    int Id = Int32.Parse(IdString);
+        //    HotelIdTextBox.Text = IdString;
+        //    insertButton.Enabled = true;
+        //    updateButton.Enabled = false;
+        //    deleteButton.Enabled = false;
+        //    HotelIdTextBox.ReadOnly = true;
+
+        //    //create connection
+        //    SqlConnection connection = new SqlConnection(connectionString);
+
+        //    //create the command and parameter objects
+        //    string childQuery = "select * from Employee where HotelId = @HotelId";
+        //    SqlCommand command = new SqlCommand(childQuery, connection);
+        //    command.Parameters.Add("@HotelId",SqlDbType.Int);
+        //    command.Parameters["@HotelId"].Value=Id;
+
+        //    try
+        //    {
+        //        connection.Open();
+
+        //        SqlDataReader reader = command.ExecuteReader();
+        //        DataTable childTable = new DataTable();
+        //        childTable.Load(reader);
+        //        dataGridView2.DataSource = childTable;
+        //        reader.Close();
+        //    }
+
+        //    catch(Exception ex)
+        //    {
+        //        MessageBox.Show(ex.ToString());
+        //        connection.Close();
+        //    }
+
+
+        //}
     }
 }

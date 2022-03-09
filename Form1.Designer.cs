@@ -59,6 +59,7 @@ namespace SGBDLab1
             this.dataGridView1.RowTemplate.Height = 25;
             this.dataGridView1.Size = new System.Drawing.Size(432, 329);
             this.dataGridView1.TabIndex = 1;
+
             // 
             // dataGridView2
             // 
